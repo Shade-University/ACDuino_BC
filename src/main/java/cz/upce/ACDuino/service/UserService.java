@@ -17,7 +17,7 @@ import static java.util.Collections.emptyList;
 @Service
 public class UserService implements UserDetailsService {
 
-    private static final Logger log = LoggerFactory.getLogger(AcDuinoApplication.class);
+    private static final Logger logger = LoggerFactory.getLogger(AcDuinoApplication.class);
 
     private UserRepository repository;
 
@@ -27,12 +27,12 @@ public class UserService implements UserDetailsService {
 
     public UserEntity createUser(String username, String password) {
         if (repository.existsByName(username)) {
-            log.info("Account already exists. Not creating.");
+            logger.info("Account already exists. Not creating.");
             return null;
         }
 
         UserEntity user = new UserEntity(username, encodePassword(password));
-        log.info("Creating account: " + repository.save(user));
+        logger.info("Creating account: " + repository.save(user));
         return user;
     }
 

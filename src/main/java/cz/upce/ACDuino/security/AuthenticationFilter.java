@@ -2,7 +2,7 @@ package cz.upce.ACDuino.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import cz.upce.ACDuino.config.SecurityConfiguration;
-import cz.upce.ACDuino.config.SecurityProperties;
+import cz.upce.ACDuino.config.JwtSecurityProperties;
 import cz.upce.ACDuino.entity.UserEntity;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -24,12 +24,12 @@ import java.util.Date;
 
 public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
-    private SecurityProperties securityProperties;
+    private JwtSecurityProperties jwtSecurityProperties;
     private AuthenticationManager authenticationManager;
 
     public AuthenticationFilter(AuthenticationManager authenticationManager, ApplicationContext ctx) {
         this.authenticationManager = authenticationManager;
-        this.securityProperties= ctx.getBean(SecurityProperties.class); //Autowired not working in filter
+        this.jwtSecurityProperties = ctx.getBean(JwtSecurityProperties.class); //Autowired not working in filter
         setFilterProcessesUrl(SecurityConfiguration.LOGIN_URL);
     }
 
@@ -48,9 +48,9 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain, Authentication authentication) {
         String token = Jwts.builder()
                 .setSubject(((User) authentication.getPrincipal()).getUsername())
-                .setExpiration(new Date(System.currentTimeMillis() + securityProperties.getExpiration()))
-                .signWith(Keys.hmacShaKeyFor(securityProperties.getSecret().getBytes()), SignatureAlgorithm.HS512)
+                .setExpiration(new Date(System.currentTimeMillis() + jwtSecurityProperties.getExpiration()))
+                .signWith(Keys.hmacShaKeyFor(jwtSecurityProperties.getSecret().getBytes()), SignatureAlgorithm.HS512)
                 .compact();
-        response.addHeader(securityProperties.getHeader(), "Bearer " + token);
+        response.addHeader(jwtSecurityProperties.getHeader(), "Bearer " + token);
     }
 }

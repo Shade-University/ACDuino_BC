@@ -1,9 +1,7 @@
 package cz.upce.ACDuino.security;
 
-import cz.upce.ACDuino.config.SecurityProperties;
+import cz.upce.ACDuino.config.JwtSecurityProperties;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -19,16 +17,16 @@ import java.util.ArrayList;
 
 public class AuthorizationFilter extends BasicAuthenticationFilter {
 
-    private SecurityProperties securityProperties;
+    private JwtSecurityProperties jwtSecurityProperties;
 
     public AuthorizationFilter(AuthenticationManager authenticationManager, ApplicationContext ctx) {
         super(authenticationManager);
-        this.securityProperties= ctx.getBean(SecurityProperties.class); //Autowired not working in filter
+        this.jwtSecurityProperties = ctx.getBean(JwtSecurityProperties.class); //Autowired not working in filter
     }
 
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws IOException, ServletException {
-        String header = request.getHeader(securityProperties.getHeader());
+        String header = request.getHeader(jwtSecurityProperties.getHeader());
         if (header == null || !header.startsWith("Bearer")) {
             filterChain.doFilter(request, response);
             return;
@@ -39,9 +37,9 @@ public class AuthorizationFilter extends BasicAuthenticationFilter {
     }
 
     private UsernamePasswordAuthenticationToken getAuthentication(HttpServletRequest request) {
-        String token = request.getHeader(securityProperties.getHeader());
+        String token = request.getHeader(jwtSecurityProperties.getHeader());
         if (token != null) {
-            String user = Jwts.parserBuilder().setSigningKey(securityProperties.getSecret().getBytes())
+            String user = Jwts.parserBuilder().setSigningKey(jwtSecurityProperties.getSecret().getBytes())
                     .build()
                     .parseClaimsJws(token.replace("Bearer", ""))
                     .getBody()
