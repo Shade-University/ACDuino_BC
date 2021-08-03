@@ -1,10 +1,15 @@
 package cz.upce.ACDuino.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import cz.upce.ACDuino.enums.RegistrationResponseStatus;
-import cz.upce.ACDuino.model.RegistrationRequest;
+import cz.upce.ACDuino.AcDuinoApplication;
+import cz.upce.ACDuino.enums.RequestType;
+import cz.upce.ACDuino.enums.ResponseStatus;
 import cz.upce.ACDuino.model.RegistrationResponse;
-import cz.upce.ACDuino.security.encryption.ContentEncryptor;
+import cz.upce.ACDuino.model.Response;
+import cz.upce.ACDuino.model.RequestFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.BufferedReader;
@@ -15,54 +20,61 @@ import java.net.HttpURLConnection;
 import java.net.InetAddress;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.time.LocalDateTime;
-import java.util.UUID;
 
 @Service
 public class RegistrationService {
 
-    private static final int TIMEOUT = 5000;
-    private static final int PORT = 8080;
+    private static final Logger logger = LoggerFactory.getLogger(AcDuinoApplication.class);
+    private static final int TIMEOUT = 20000;
 
-    private final ContentEncryptor encryptor;
+    private final RequestFactory requestFactory;
 
-    public RegistrationService(ContentEncryptor encryptor) {
-        this.encryptor = encryptor;
+    @Value("${server.port}")
+    private int serverPort;
+
+    public RegistrationService(RequestFactory requestFactory) {
+        this.requestFactory = requestFactory;
     }
 
-    public RegistrationResponse sendRegistrationRequest(String ip, boolean https) throws IOException {
-        if(!InetAddress.getByName(ip).isReachable(TIMEOUT)) {
-            return new RegistrationResponse(
-                    UUID.randomUUID().toString(),
-                    LocalDateTime.now(),
-                    RegistrationResponseStatus.HOST_UNREACHABLE);
+    public Response sendRegistrationRequest(String ip) throws IOException {
+        return sendRequest(ip, RequestType.REGISTRATION);
+    }
+
+    public Response sendUnregistrationRequest(String ip) throws IOException {
+        return sendRequest(ip, RequestType.UNREGISTRATION);
+    }
+
+    private Response sendRequest(String ip, RequestType type) throws IOException {
+        if (!InetAddress.getByName(ip).isReachable(TIMEOUT)) {
+            return new Response(ResponseStatus.HOST_UNREACHABLE);
         }
 
-        URL url = new URL(
-                https ? "https://" : "http://"
-                        + ip
-                        + ":" + PORT
-                        + "/registration");
-        HttpURLConnection con = (HttpURLConnection)url.openConnection();
+        URL url = new URL("http://" + ip + ":" + serverPort + type.getUrl());
+
+        HttpURLConnection con = (HttpURLConnection) url.openConnection();
         con.setRequestMethod("POST");
-        con.setRequestProperty("Content-Type", "application/json; utf-8");
+        con.setRequestProperty("Content-Type", "application/json");
         con.setRequestProperty("Accept", "application/json");
         con.setDoOutput(true);
 
         ObjectMapper objectMapper = new ObjectMapper();
-        try(OutputStream os = con.getOutputStream()) {
-            byte[] input = objectMapper.writeValueAsBytes(new RegistrationRequest(encryptor.getKey()));
+        try (OutputStream os = con.getOutputStream()) {
+
+            byte[] input = objectMapper.writeValueAsBytes(requestFactory.getRequest(type));
             os.write(input, 0, input.length);
+            logger.info(new String(input));
         }
 
-        try(BufferedReader br = new BufferedReader(
+        try (BufferedReader br = new BufferedReader(
                 new InputStreamReader(con.getInputStream(), StandardCharsets.UTF_8))) {
             StringBuilder response = new StringBuilder();
             String responseLine;
             while ((responseLine = br.readLine()) != null) {
                 response.append(responseLine.trim());
             }
-            return objectMapper.readValue(response.toString(), RegistrationResponse.class);
+            logger.info(response.toString());
+            ResponseStatus status = objectMapper.readValue(response.toString(), ResponseStatus.class);
+            return new RegistrationResponse(status);
         }
     }
 }

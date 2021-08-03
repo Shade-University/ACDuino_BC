@@ -3,6 +3,7 @@ package cz.upce.ACDuino.config;
 import cz.upce.ACDuino.security.AuthenticationFilter;
 import cz.upce.ACDuino.security.AuthorizationFilter;
 import cz.upce.ACDuino.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -10,10 +11,13 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import javax.sql.DataSource;
 
 @EnableWebSecurity
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
@@ -22,8 +26,11 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     private final UserService userService;
 
-    public SecurityConfiguration(UserService userService) {
+    private final DataSource dataSource;
+
+    public SecurityConfiguration(UserService userService, DataSource dataSource) {
         this.userService = userService;
+        this.dataSource = dataSource;
     }
 
     @Override

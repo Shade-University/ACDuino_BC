@@ -4,46 +4,18 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
+import cz.upce.ACDuino.enums.RequestType;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-public class RegistrationRequest {
-
-    private String uid;
-
-    @JsonSerialize(using = LocalDateTimeSerializer.class)
-    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime created;
+public class RegistrationRequest extends Request {
 
     @JsonProperty("secret_key")
-    private String secretKey;
+    private final String secretKey;
 
     public RegistrationRequest(String secret) {
-        uid = UUID.randomUUID().toString();
-        created = LocalDateTime.now();
+        super(RequestType.REGISTRATION);
         secretKey = secret;
-    }
-
-    public LocalDateTime getCreated() {
-        return created;
-    }
-
-    public String getSecretKey() {
-        return secretKey;
-    }
-
-    public String getUid() {
-        return uid;
-    }
-
-    @Override
-    public String toString() {
-        final StringBuilder sb = new StringBuilder("RegistrationRequest{");
-        sb.append("uid='").append(uid).append('\'');
-        sb.append(", created='").append(created.toString()).append('\'');
-        sb.append(", secretKey='").append(secretKey).append('\'');
-        sb.append("}");
-        return sb.toString();
     }
 }

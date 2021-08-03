@@ -24,8 +24,8 @@ import java.util.Date;
 
 public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
-    private JwtSecurityProperties jwtSecurityProperties;
-    private AuthenticationManager authenticationManager;
+    private final JwtSecurityProperties jwtSecurityProperties;
+    private final AuthenticationManager authenticationManager;
 
     public AuthenticationFilter(AuthenticationManager authenticationManager, ApplicationContext ctx) {
         this.authenticationManager = authenticationManager;
@@ -36,7 +36,8 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
         try {
-            UserEntity creds = new ObjectMapper().readValue(request.getInputStream(), UserEntity.class);
+            ObjectMapper objectMapper = new ObjectMapper();
+            UserEntity creds = objectMapper.readValue(request.getInputStream(), UserEntity.class);
             return authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(creds.getUsername(), creds.getPassword(), new ArrayList<>()));
         } catch (IOException e) {

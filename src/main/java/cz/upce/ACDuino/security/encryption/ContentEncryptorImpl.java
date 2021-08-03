@@ -32,18 +32,20 @@ public class ContentEncryptorImpl implements ContentEncryptor {
 
     private final AesSecurityProperties properties;
 
+    private String key;
+
     public ContentEncryptorImpl(AesSecurityProperties properties) {
         this.properties = properties;
+        try {
+            key = new String(getKeyFromPassword().getEncoded());
+        } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
+            logger.error("Error in aes key generation.", e);
+        }
     }
 
     @Override
     public String getKey() {
-        try {
-            return new String(getKeyFromPassword().getEncoded());
-        } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
-            logger.error("Error in aes key generation.", e);
-            return null;
-        }
+        return key;
     }
 
     @Override

@@ -17,7 +17,7 @@ import java.util.ArrayList;
 
 public class AuthorizationFilter extends BasicAuthenticationFilter {
 
-    private JwtSecurityProperties jwtSecurityProperties;
+    private final JwtSecurityProperties jwtSecurityProperties;
 
     public AuthorizationFilter(AuthenticationManager authenticationManager, ApplicationContext ctx) {
         super(authenticationManager);

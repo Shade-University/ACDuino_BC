@@ -4,13 +4,15 @@ import javax.persistence.Entity;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "user")
+@Table(name = "user", uniqueConstraints = {
+        @UniqueConstraint(name = "username_uniq_constraint", columnNames = "username")
+})
 public class UserEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @Column(name="username", unique = true, nullable = false)
+    @Column(name="username", nullable = false)
     private String username;
 
     @Column(name="password", nullable = false)

@@ -1,15 +1,13 @@
 package cz.upce.ACDuino.repository;
 
 import cz.upce.ACDuino.entity.UserEntity;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 
-public interface UserRepository extends CrudRepository<UserEntity,Integer> {
+@Repository
+public interface UserRepository extends JpaRepository<UserEntity,Integer> {
 
-    @Query("SELECT CASE WHEN COUNT(u) > 0 THEN true ELSE false END FROM UserEntity u WHERE u.username = :username")
-    boolean existsByName(@Param("username") String username);
-
-    @Query("SELECT u FROM UserEntity u WHERE u.username = :username")
-    UserEntity findByUsername(@Param("username") String username);
+    UserEntity findByUsername(String username); // spring supported keyword findBy__
 }

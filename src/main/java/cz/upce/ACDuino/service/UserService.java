@@ -17,23 +17,10 @@ import static java.util.Collections.emptyList;
 @Service
 public class UserService implements UserDetailsService {
 
-    private static final Logger logger = LoggerFactory.getLogger(AcDuinoApplication.class);
-
-    private UserRepository repository;
+    private final UserRepository repository;
 
     public UserService(UserRepository repository) {
         this.repository = repository;
-    }
-
-    public UserEntity createUser(String username, String password) {
-        if (repository.existsByName(username)) {
-            logger.info("Account already exists. Not creating.");
-            return null;
-        }
-
-        UserEntity user = new UserEntity(username, encodePassword(password));
-        logger.info("Creating account: " + repository.save(user));
-        return user;
     }
 
     @Override
@@ -44,11 +31,5 @@ public class UserService implements UserDetailsService {
         }
         return new User(user.getUsername(), user.getPassword(), emptyList());
     }
-
-
-    private String encodePassword(String password) {
-        return new BCryptPasswordEncoder().encode(password);
-    }
-
 
 }

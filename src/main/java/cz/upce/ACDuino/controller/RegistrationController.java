@@ -1,6 +1,6 @@
 package cz.upce.ACDuino.controller;
 
-import cz.upce.ACDuino.model.RegistrationResponse;
+import cz.upce.ACDuino.model.Response;
 import cz.upce.ACDuino.security.encryption.ContentEncryptor;
 import cz.upce.ACDuino.service.RegistrationService;
 import org.springframework.web.bind.annotation.*;
@@ -26,8 +26,13 @@ public class RegistrationController {
     }
 
     @GetMapping("/registration/{ip}")
-    public RegistrationResponse sendRegistrationRequest(@PathVariable String ip) throws IOException {
-        return registrationService.sendRegistrationRequest(ip, false);
+    public Response sendRegistrationRequest(@PathVariable String ip) throws IOException {
+        return registrationService.sendRegistrationRequest(ip);
+    }
+
+    @GetMapping("/unregistration/{ip}")
+    public Response sendUnregistrationRequest(@PathVariable String ip) throws IOException {
+        return registrationService.sendUnregistrationRequest(ip);
     }
 
     @GetMapping("/test")
