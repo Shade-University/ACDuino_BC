@@ -23,6 +23,9 @@ public class RequestFactory {
         else if (type == RequestType.UNREGISTRATION) {
             return new UnregistrationRequest();
         }
+        else if(type == RequestType.COMMAND_OPEN) {
+            return new CommandOpenRequest();
+        }
 
         return null;
     }

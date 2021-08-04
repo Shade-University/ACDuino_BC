@@ -5,24 +5,27 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import cz.upce.ACDuino.enums.ResponseStatus;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-public class Response {
+public class Response implements Serializable {
 
-    private final String uid;
+    private String uid;
 
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
-    private final LocalDateTime created;
+    private LocalDateTime created;
 
-    private final ResponseStatus status;
+    private ResponseStatus status;
 
     public Response(ResponseStatus status) {
         uid = UUID.randomUUID().toString();
         created = LocalDateTime.now();
         this.status = status;
     }
+
+    public Response() {}
 
     public String getUid() {
         return uid;

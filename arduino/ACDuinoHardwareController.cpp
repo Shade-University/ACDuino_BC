@@ -1,29 +1,37 @@
 #include "libraries/ACDuinoHardwareController.h"
 
-void AcDuinoHardwareController::lightLed()
-{
-    if(registered == true)
-    {
-        Serial.println("blink green");
-        digitalWrite(LED_GREEN, HIGH);
-        digitalWrite(LED_RED, LOW);
-    }
-    else
-    {
-        Serial.println("blink red");
-        digitalWrite(LED_GREEN, LOW);
-        digitalWrite(LED_RED, HIGH); 
-    }
-}
-
 void AcDuinoHardwareController::setLedRegistered()
 {
     registered = true;
+    digitalWrite(LED_BLUE, HIGH);
     Serial.println("changed registered status to true");
 }
 
 void AcDuinoHardwareController::setLedUnregistered()
 {
-    Serial.println("changed registered status to false");
     registered = false;
+    digitalWrite(LED_BLUE, LOW);
+    Serial.println("changed registered status to false");
+}
+
+void AcDuinoHardwareController::blinkOpenSuccess()
+{
+    digitalWrite(LED_BLUE, LOW);
+
+    digitalWrite(LED_GREEN, HIGH);
+    delay(2000);
+    digitalWrite(LED_GREEN, LOW);
+
+    digitalWrite(LED_BLUE, HIGH);
+}
+
+void AcDuinoHardwareController::blinkOpenDenied()
+{
+    digitalWrite(LED_BLUE, LOW);
+
+    digitalWrite(LED_RED, HIGH);
+    delay(2000);
+    digitalWrite(LED_RED, LOW);
+
+    digitalWrite(LED_BLUE, HIGH);
 }

@@ -2,7 +2,8 @@ package cz.upce.ACDuino.enums;
 
 public enum RequestType {
     REGISTRATION("REGISTRATION", "/registration"),
-    UNREGISTRATION("UNREGISTRATION", "/unregistration");
+    UNREGISTRATION("UNREGISTRATION", "/unregistration"),
+    COMMAND_OPEN("COMMAND_OPEN", "/open");
 
     private final String request;
     private final String url;

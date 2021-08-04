@@ -34,7 +34,7 @@ void AcDuinoWifiServer::listen()
                     {
                         Serial.println(error.f_str());
                         sendHttpHeader(&client);
-                        client.println("{\"status\":\"ERROR\"}");
+                        client.println("{\"status\":\"JSON_DESERIALIZE_ERROR\"}");
                         client.stop();
                         return;
                     }
@@ -44,24 +44,51 @@ void AcDuinoWifiServer::listen()
                         if (registered == false)
                         {
                             secret_key = doc["secret_key"];
-                            Serial.println(secret_key);
                             registered = true;
-                            Serial.println("Changing blink...");
                             hwController->setLedRegistered();
-                            Serial.println("Sending http header");
                             sendHttpHeader(&client);
-                            Serial.println("Sending status");
-                            client.println("{\"status\":\"OK\"}");
+                            client.println("{\"status\":\"REGISTER_SUCCESSFUL\"}");
+                        }
+                        else
+                        {
+                            sendHttpHeader(&client);
+                            client.println("{\"status\":\"ALREADY_REGISTERED\"}");
                         }
                     }
-                    else if(doc["request"] == "UNREGISTRATION")
+                    else if (doc["request"] == "UNREGISTRATION")
                     {
-                        secret_key = NULL;
-                        registered = false;
-                        hwController->setLedUnregistered();
+                        if (registered == true)
+                        {
+                            secret_key = NULL;
+                            registered = false;
+                            hwController->setLedUnregistered();
+                            sendHttpHeader(&client);
+                            client.println("{\"status\":\"UREGISTER_SUCCESSFUL\"}");
+                        }
+                        else
+                        {
+                            sendHttpHeader(&client);
+                            client.println("{\"status\":\"ALREADY_UNREGISTERED\"}");
+                        }
+                    }
+                    else if (doc["request"] == "COMMAND_OPEN")
+                    {
+                        if (registered == true)
+                        {
+                        hwController->blinkOpenSuccess();
                         sendHttpHeader(&client);
                         client.println("{\"status\":\"OK\"}");
-
+                        }
+                        else
+                        {
+                        sendHttpHeader(&client);
+                        client.println("{\"status\":\"NOT_REGISTERED\"}");
+                        }
+                    }
+                    else
+                    {
+                        sendHttpHeader(&client);
+                        client.println("{\"status\":\"UNRECOGNIZED_REQUEST\"}");
                     }
                     Serial.println("Server stop");
                     client.print("\n");
@@ -73,7 +100,7 @@ void AcDuinoWifiServer::listen()
     }
 }
 
-String AcDuinoWifiServer::readJson(WiFiClient* client)
+String AcDuinoWifiServer::readJson(WiFiClient *client)
 {
     String json;
     char c = '{';
@@ -87,7 +114,7 @@ String AcDuinoWifiServer::readJson(WiFiClient* client)
     return json;
 }
 
-void AcDuinoWifiServer::sendHttpHeader(WiFiClient* client)
+void AcDuinoWifiServer::sendHttpHeader(WiFiClient *client)
 {
 
     client->println("HTTP/1.1 200 OK");

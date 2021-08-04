@@ -18,6 +18,5 @@ void setup() {
 
 void loop() {
     server->listen();
-    hwController->lightLed();
     delay(1000);
 }

@@ -14,8 +14,8 @@ public class RegistrationRequest extends Request {
     @JsonProperty("secret_key")
     private final String secretKey;
 
-    public RegistrationRequest(String secret) {
+    public RegistrationRequest(String secretKey) {
         super(RequestType.REGISTRATION);
-        secretKey = secret;
+        this.secretKey = secretKey;
     }
 }
