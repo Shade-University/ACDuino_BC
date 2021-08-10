@@ -17,6 +17,7 @@ class AcDuinoWifiServer {
     }
     void start();
     void listen();
+    bool authorizeRfid(char* rfidTag);
 
   private:
     int port;

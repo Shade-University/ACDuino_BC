@@ -114,6 +114,10 @@ String AcDuinoWifiServer::readJson(WiFiClient *client)
     return json;
 }
 
+bool AcDuinoWifiServer::authorizeRfid(char* rfidTag)
+{
+    
+}
 void AcDuinoWifiServer::sendHttpHeader(WiFiClient *client)
 {
 
