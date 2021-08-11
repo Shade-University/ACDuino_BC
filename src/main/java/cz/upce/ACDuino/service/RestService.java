@@ -44,9 +44,9 @@ public class RestService {
         return sendRequest(ip, RequestType.REGISTRATION);
     }
 
-    public Response sendUnregistrationRequest(String ip) {
-        logger.info("Sending unregistration request");
-        return sendRequest(ip, RequestType.UNREGISTRATION);
+    public Response sendRevokeRequest(String ip) {
+        logger.info("Sending revoke request");
+        return sendRequest(ip, RequestType.REVOKE);
     }
 
     public Response sendCommandOpenRequest(String ip) {
@@ -54,7 +54,7 @@ public class RestService {
         return sendRequest(ip, RequestType.COMMAND_OPEN);
     }
 
-    private Response sendRequest(String ip, RequestType type) {
+    public Response sendRequest(String ip, RequestType type) {
         String url = "http://{ip}:{port}{url}";
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);

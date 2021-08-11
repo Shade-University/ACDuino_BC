@@ -3,9 +3,9 @@ package cz.upce.ACDuino.model;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import cz.upce.ACDuino.enums.RequestType;
 
-public class UnregistrationRequest extends Request {
+public class RevokeRequest extends Request {
 
-    public UnregistrationRequest() {
-        super(RequestType.UNREGISTRATION);
+    public RevokeRequest() {
+        super(RequestType.REVOKE);
     }
 }

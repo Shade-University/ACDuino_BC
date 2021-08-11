@@ -56,7 +56,7 @@ void AcDuinoWifiServer::listen()
                             client.println("{\"status\":\"ALREADY_REGISTERED\"}");
                         }
                     }
-                    else if (doc["request"] == "UNREGISTRATION")
+                    else if (doc["request"] == "REVOKE")
                     {
                         if (registered == true)
                         {
@@ -64,12 +64,12 @@ void AcDuinoWifiServer::listen()
                             registered = false;
                             hwController->setLedUnregistered();
                             sendHttpHeader(&client);
-                            client.println("{\"status\":\"UREGISTER_SUCCESSFUL\"}");
+                            client.println("{\"status\":\"REVOKE_SUCCESSFUL\"}");
                         }
                         else
                         {
                             sendHttpHeader(&client);
-                            client.println("{\"status\":\"ALREADY_UNREGISTERED\"}");
+                            client.println("{\"status\":\"ALREADY_REVOKED\"}");
                         }
                     }
                     else if (doc["request"] == "COMMAND_OPEN")

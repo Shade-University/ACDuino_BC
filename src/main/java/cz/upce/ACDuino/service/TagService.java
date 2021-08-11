@@ -11,6 +11,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import static java.util.Collections.emptyList;
 
@@ -33,6 +34,10 @@ public class TagService {
             repository.save(tag);
         }
         return tag != null && !tag.isDisabled();
+    }
+
+    public List<TagEntity> getAll() {
+        return repository.findAll();
     }
 
     public TagEntity saveTag(TagEntity entity)

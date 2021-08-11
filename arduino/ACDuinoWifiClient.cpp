@@ -17,7 +17,7 @@ bool AcDuinoWifiClient::authorizeRfid(int rfidTag)
     Serial.println(rfidTag, HEX);
     Serial.println(String(rfidTag, HEX));
     String postData = "{ \"rfidTag\":\"" + String(rfidTag, HEX) + "\" }";
-    Serial.printLN("Requesting open request..");
+    Serial.println("Requesting open request..");
 
     // Send request to the server:
     client.println("POST /api/v1/openRequest HTTP/1.1");

@@ -7,6 +7,7 @@ import cz.upce.ACDuino.repository.TagRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 public class ClientService {
@@ -17,14 +18,18 @@ public class ClientService {
         this.repository = repository;
     }
 
-    public ClientEntity saveEntity(ClientEntity entity)
-    {
-        return repository.save(entity);
+    public List<ClientEntity> getAll() {
+        return repository.findAll();
     }
 
-    public void deleteEntity(String tagId)
+    public ClientEntity saveClient(ClientEntity client)
     {
-        repository.deleteByClientIp(tagId);
+        return repository.save(client);
+    }
+
+    public void deleteClient(String clientIp)
+    {
+        repository.deleteByClientIp(clientIp);
     }
 
 }

@@ -48,7 +48,7 @@ void AcDuinoHardwareController::handleRfid()
     // checksum [2 byte]
     // tail [1 byte] (always (0x03)
 
-    if (registered && client != null && RFID.available() > 0)
+    if (registered && client != NULL && RFID.available() > 0)
     {
         char buff[RDM6300_PACKET_SIZE];
         uint8_t checksum;

@@ -27,8 +27,8 @@ public class RequestFactory {
         else if(type == RequestType.REGISTRATION) {
             return new RegistrationRequest(encryptor.getKey(), serverPort);
         }
-        else if (type == RequestType.UNREGISTRATION) {
-            return new UnregistrationRequest();
+        else if (type == RequestType.REVOKE) {
+            return new RevokeRequest();
         }
         else if(type == RequestType.COMMAND_OPEN) {
             return new CommandOpenRequest();
