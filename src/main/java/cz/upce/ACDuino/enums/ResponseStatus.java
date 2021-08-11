@@ -13,7 +13,9 @@ public enum ResponseStatus {
     JSON_DESERIALIZE_ERROR("JSON_DESERIALIZE_ERROR"),
     UNRECOGNIZED_REQUEST("UNRECOGNIZED_REQUEST"),
     NOT_REGISTERED("NOT_REGISTERED"),
-    OK("OK");
+    OK("OK"),
+    OPEN_SUCCESS("OPEN_SUCCESS"),
+    OPEN_DENIED("OPEN_DENIED");
 
     private final String status;
 

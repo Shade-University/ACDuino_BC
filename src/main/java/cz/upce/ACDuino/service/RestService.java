@@ -55,7 +55,8 @@ public class RestService {
     }
 
     private Response sendRequest(String ip, RequestType type) {
-        String url = "http://{ip}:{port}{url}";HttpHeaders headers = new HttpHeaders();
+        String url = "http://{ip}:{port}{url}";
+        HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
         HttpEntity<Request> entity = new HttpEntity<>(requestFactory.getRequest(type), headers);

@@ -16,13 +16,11 @@ void AcDuinoWifiServer::listen()
     if (client)
     {
         Serial.println("New client connected.");
-
         while (client.connected())
         {
             if (client.available())
             {
                 char c = client.read();
-                Serial.print(c);
                 if (c == '{')
                 {
                     String json = readJson(&client);
@@ -43,9 +41,12 @@ void AcDuinoWifiServer::listen()
                     {
                         if (registered == false)
                         {
+                            int port = atoi(doc["server_port"]);
+  
                             secret_key = doc["secret_key"];
                             registered = true;
                             hwController->setLedRegistered();
+                            hwController->setWifiClient(client.remoteIP().toString(), port);
                             sendHttpHeader(&client);
                             client.println("{\"status\":\"REGISTER_SUCCESSFUL\"}");
                         }
@@ -75,14 +76,14 @@ void AcDuinoWifiServer::listen()
                     {
                         if (registered == true)
                         {
-                        hwController->blinkOpenSuccess();
-                        sendHttpHeader(&client);
-                        client.println("{\"status\":\"OK\"}");
+                            hwController->blinkOpenSuccess();
+                            sendHttpHeader(&client);
+                            client.println("{\"status\":\"OK\"}");
                         }
                         else
                         {
-                        sendHttpHeader(&client);
-                        client.println("{\"status\":\"NOT_REGISTERED\"}");
+                            sendHttpHeader(&client);
+                            client.println("{\"status\":\"NOT_REGISTERED\"}");
                         }
                     }
                     else
@@ -114,16 +115,12 @@ String AcDuinoWifiServer::readJson(WiFiClient *client)
     return json;
 }
 
-bool AcDuinoWifiServer::authorizeRfid(char* rfidTag)
-{
-    
-}
 void AcDuinoWifiServer::sendHttpHeader(WiFiClient *client)
 {
 
     client->println("HTTP/1.1 200 OK");
     client->println("Content-Type: application/json");
-    client->println("Server: ACDuino-client");
+    client->println("Server: ACDuino-server");
     client->println("Connection: close");
     client->print("\n");
 }

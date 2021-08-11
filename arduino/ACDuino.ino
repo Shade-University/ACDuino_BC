@@ -11,13 +11,13 @@ void setup() {
     Serial.begin(9600);
     AcDuinoWifi wifi(ssid, password);
     wifi.connect();
+    hwController = new AcDuinoHardwareController();
     server = new AcDuinoWifiServer(8080, hwController);   
     server->start();
-    hwController = new AcDuinoHardwareController(server);
 }
 
 void loop() {
     server->listen();
-    hwController->readRfid();
+    hwController->handleRfid();
     delay(1000);
 }

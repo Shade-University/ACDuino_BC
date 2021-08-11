@@ -11,11 +11,23 @@ import java.util.UUID;
 
 public class RegistrationRequest extends Request {
 
+    @JsonProperty("server_port")
+    private final String serverPort;
+
     @JsonProperty("secret_key")
     private final String secretKey;
 
-    public RegistrationRequest(String secretKey) {
+    public RegistrationRequest(String secretKey, String serverPort) {
         super(RequestType.REGISTRATION);
         this.secretKey = secretKey;
+        this.serverPort = serverPort;
+    }
+
+    public String getServerPort() {
+        return serverPort;
+    }
+
+    public String getSecretKey() {
+        return secretKey;
     }
 }

@@ -7,14 +7,13 @@
 #define RDM6300_PACKET_END		0x03
 #define RDM6300_LATEST_TIMEOUT		10000
 
-#include "libraries/ACDuinoWifiServer.h"
+#include "ACDuinoWifiClient.h"
 #import <Arduino.h>
 
 class AcDuinoHardwareController{
   public:
-    AcDuinoHardwareController(AcDuinoWifiServer* server) 
+    AcDuinoHardwareController() 
     {
-        this->server = server;
         RFID.begin(9600);
         pinMode(LED_GREEN, OUTPUT);
         pinMode(LED_RED, OUTPUT);
@@ -29,18 +28,17 @@ class AcDuinoHardwareController{
 
     void setLedUnregistered();
     void setLedRegistered();
+    void setWifiClient(String host, int port);
     void blinkOpenSuccess();
     void blinkOpenDenied();
     void handleRfid();
 
   private:
-    AcDuinoWifiServer* server;
+    AcDuinoWifiClient* client;
     bool registered;
-    char rfidId[RDM6300_PACKET_SIZE];
-    char rfidTag[RDM6300_PACKET_SIZE - 4];
-    char latestRfidId[RDM6300_PACKET_SIZE];
+    int rfidTag;
+    int latestRfidTag;
     unsigned long lastRfidTime;   
 
-    bool validateLoadedRfid(); 
 };
 #endif

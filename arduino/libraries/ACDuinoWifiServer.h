@@ -17,7 +17,6 @@ class AcDuinoWifiServer {
     }
     void start();
     void listen();
-    bool authorizeRfid(char* rfidTag);
 
   private:
     int port;
@@ -25,6 +24,7 @@ class AcDuinoWifiServer {
     const char* secret_key;
     WiFiServer* server;
     AcDuinoHardwareController* hwController;
+
     String readJson(WiFiClient* client);
     void sendHttpHeader(WiFiClient* client);
 };

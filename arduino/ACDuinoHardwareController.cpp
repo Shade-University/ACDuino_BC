@@ -14,6 +14,11 @@ void AcDuinoHardwareController::setLedUnregistered()
     Serial.println("changed registered status to false");
 }
 
+void AcDuinoHardwareController::setWifiClient(String host, int port)
+{
+    this->client = new AcDuinoWifiClient(host, port);
+}
+
 void AcDuinoHardwareController::blinkOpenSuccess()
 {
     digitalWrite(LED_BLUE, LOW);
@@ -43,81 +48,69 @@ void AcDuinoHardwareController::handleRfid()
     // checksum [2 byte]
     // tail [1 byte] (always (0x03)
 
-    if (registered && RFID.available() > 0)
+    if (registered && client != null && RFID.available() > 0)
     {
+        char buff[RDM6300_PACKET_SIZE];
+        uint8_t checksum;
+
         Serial.println("Card detected");
         Serial.println("Loaded: ");
 
         for (int i = 0; i < RDM6300_PACKET_SIZE; i++)
         {
-            rfidId[i] = RFID.read();
-            Serial.print(rfidId[i]);
+            buff[i] = RFID.read();
+            Serial.print(buff[i]);
         } //Load RFID
+        Serial.println("");
 
-        if (!validateLoadedRfid())
+        if (buff[0] != RDM6300_PACKET_BEGIN || buff[RDM6300_PACKET_SIZE - 1] != RDM6300_PACKET_END)
         {
-            Serial.println("Validation failed.");
+            Serial.println("Invalid rfid bytes");
             return;
-        } //Validate
+        }                                  //validate first and last bit
+        buff[RDM6300_PACKET_SIZE - 1] = 0; //Remove last byte
+        buff[0] = 0;                       //Remove first byte
 
-        for (int i = 0; i < RDM6300_PACKET_SIZE; i++)
+        checksum = strtol(buff + 11, NULL, 16); //From position 11 to 0 [position 13] - checksum
+        buff[11] = 0;                           //Set 0 to perform strtol
+        rfidTag = strtol(buff + 3, NULL, 16);    //From position 3 to 0 [position 11]
+        buff[3] = 0;                            //Set 0 to perform strtol
+        checksum ^= strtol(buff + 1, NULL, 16); //append version to checksum. From position 1 to 0 [position 3]
+
+        /* xore the rfidTag and validate checksum */
+        for (uint8_t i = 0; i < 32; i += 8)
+            checksum ^= ((rfidTag >> i) & 0xFF);
+        if (checksum)
         {
-            latestRfidId[i] = rfidId[i];
+            Serial.println("Checksum validation failed.");
+            return;
         }
-        lastRfidTime = millis(); 
-        //Set last loaded rfid and set time of set
 
-        Serial.print("\n");
-        Serial.println("Card tag: ");
-        for (int i = 1; i < RDM6300_PACKET_SIZE - 3; i++)
+        if(rfidTag == 0)
         {
-            rfidTag[i - 1] = rfidId[i];
-            Serial.print(rfidTag[i - 1]);
-        } //Save rfidTag
-        Serial.print("\n");
+            Serial.println("Invalid 0 tag");
+            return;
+        }
 
-        if(server->authorizeRfid(rfidTag))
+        if(millis() - lastRfidTime > RDM6300_LATEST_TIMEOUT) latestRfidTag = 0;
+
+        Serial.print("Card tag: ");
+        Serial.println(rfidTag, HEX);
+
+        if (rfidTag == latestRfidTag)
+        {
+            Serial.println("Duplicite rfid reading.");
+            return;
+        }
+
+        lastRfidTime = millis();
+        latestRfidTag = rfidTag;
+
+        if (client->authorizeRfid(rfidTag))
             blinkOpenSuccess();
         else
             blinkOpenDenied();
 
-        RFID.flush();
+        while (RFID.available() > 0) RFID.read(); //clear
     }
-}
-
-bool AcDuinoHardwareController::validateLoadedRfid()
-{
-    if (millis() - lastRfidTime > RDM6300_LATEST_TIMEOUT)
-    {
-        for (int i = 0; i < RDM6300_PACKET_SIZE; i++)
-            latestRfidId[i] = 0;
-    } //Reset last rfid
-
-    if (rfidId[0] != RDM6300_PACKET_BEGIN || rfidId[RDM6300_PACKET_SIZE - 1] != RDM6300_PACKET_END)
-    {
-        Serial.println("Invalid rfid bytes");
-        return false;
-    } //validate first and last bit
-
-    bool nullable_tag = true;
-    for (int i = 1; i < RDM6300_PACKET_SIZE - 3; i++)
-    {
-        if (rfidId[i] != 0)
-            nullable_tag = false;
-    } 
-    if (nullable_tag)
-        return false;
-    //Validate if tag is not null (better to check checksum, but whatever)
-
-    bool rfidChanged = false;
-    ;    for (int i = 0; i < RDM6300_PACKET_SIZE; i++)
-    {
-        if (latestRfidId[i] != rfidId[i])
-            rfidChanged = true;
-    } 
-    if (!rfidChanged)
-        return false;
-    //Check if last rfid is same as new one
-
-    return true;
 }
