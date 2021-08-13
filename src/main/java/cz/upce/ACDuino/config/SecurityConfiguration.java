@@ -25,9 +25,11 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     public static final String LOGIN_URL = "/login";
 
     private final UserService userService;
+    private final JwtSecurityProperties jwtSecurityProperties;
 
-    public SecurityConfiguration(UserService userService, DataSource dataSource) {
+    public SecurityConfiguration(UserService userService, JwtSecurityProperties jwtSecurityProperties) {
         this.userService = userService;
+        this.jwtSecurityProperties = jwtSecurityProperties;
     }
 
     @Override
@@ -44,7 +46,10 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", new CorsConfiguration().applyPermitDefaultValues());
+        CorsConfiguration config = new CorsConfiguration().applyPermitDefaultValues();
+        config.addExposedHeader(jwtSecurityProperties.getHeader());
+        config.addAllowedMethod("DELETE");
+        source.registerCorsConfiguration("/**", config);
         return source;
     }
 

@@ -23,10 +23,6 @@ public class JwtSecurityProperties {
         return header;
     }
 
-    public void setHeader(String header) {
-        this.header = header;
-    }
-
     public Long getExpiration() {
         return expiration;
     }

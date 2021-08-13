@@ -35,4 +35,4 @@ build/
 ### Project
 logs/
 db/mysql_data
-www/
+ArduinoOutput/

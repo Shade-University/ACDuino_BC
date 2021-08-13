@@ -12,5 +12,5 @@ public interface ClientRepository extends JpaRepository<ClientEntity,Integer> {
     ClientEntity findByClientIp(String clientIp); // spring supported keyword findBy__
 
     @Transactional
-    long deleteByClientIp(String tagId);
+    long deleteByClientIp(String clientIp);
 }
