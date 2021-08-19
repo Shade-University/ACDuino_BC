@@ -1,5 +1,7 @@
 $(document).ready(function () {
-    $(".alert").hide(); //Hide error message
+    $(".alert").each(function(e) {
+        $(e).hide();
+    }); //Hide error messages
 
     $(document).bind('keypress', function (e) {
         if (e.keyCode == 13) {

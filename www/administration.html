@@ -11,9 +11,8 @@
     <meta name="keywords" content="">
     <meta name="viewport"
           content="width=device-width, height=device-height, initial-scale=1, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0, shrink-to-fit=no">
-
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css">
-    <style></style>
+    <link rel="stylesheet" href="assets/css/style.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" />
     <style></style>
 </head>
 <body>
@@ -22,25 +21,31 @@
         <div class="col-12">
             <h2>Administrační systém</h2>
         </div>
+
+        <!-- Left menu -->
         <div class="nav flex-column nav-pills col-12 col-md-3" id="v-pills-tab" role="tablist"
              aria-orientation="vertical">
-            <a class="nav-link active" id="v-pills-home-tab" data-toggle="pill" href="#v-pills-home" role="tab"
-               aria-controls="v-pills-home" aria-selected="true">Přidat Arduino</a>
-            <a class="nav-link" id="v-pills-profile-tab" data-toggle="pill" href="#v-pills-profile" role="tab"
-               aria-controls="v-pills-profile" aria-selected="false">Přidat RIFD kartu</a>
-            <a class="nav-link" id="v-pills-messages-tab" data-toggle="pill" href="#v-pills-messages" role="tab"
-               aria-controls="v-pills-messages" aria-selected="false">Log list</a>
+            <a class="nav-link active" id="v-pills-client-tab" data-toggle="pill" href="#v-pills-client" role="tab"
+               aria-controls="v-pills-client" aria-selected="true">Přidat klienta</a>
+            <a class="nav-link" id="v-pills-rfid-tab" data-toggle="pill" href="#v-pills-rfid" role="tab"
+               aria-controls="v-pills-rfid" aria-selected="false">Přidat RIFD kartu</a>
+            <a class="nav-link" id="v-pills-log-tab" data-toggle="pill" href="#v-pills-log" role="tab"
+               aria-controls="v-pills-log" aria-selected="false">Log list</a>
         </div>
+
+
+        <!-- CLIENT TAB -->
         <div class="tab-content col-12 col-md-9" id="v-pills-tabContent">
-            <div class="tab-pane fade show active" id="v-pills-home" role="tabpanel" aria-labelledby="v-pills-home-tab">
-                <form class="">
+            <div class="tab-pane fade show active" id="v-pills-client" role="tabpanel" aria-labelledby="v-pills-client-tab">
+
                     <div id="clientConnectFailed" class="alert alert-danger alert-dismissible text-left fade"
                          role="alert">
                         Nepodařilo se připojit k zařízení
-                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <button type="button" class="close" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
+
                     <div id="clientConnectSucess" class="alert alert-success alert-dismissible text-left fade"
                          role="alert">
                         Podařilo se úspěšně připojit k zařízení
@@ -57,7 +62,7 @@
                         <input type="text" class="form-control" id="deviceName" placeholder="ARDUINO 01">
                     </div>
                     <div type="submit" class="btn btn-primary" id="clientConnectBtn">Připojit</div>
-                </form>
+
                 <table class="table mt-5" id="tableClient">
                     <thead class="thead-dark">
                     <tr>
@@ -71,30 +76,31 @@
                     </tbody>
                 </table>
             </div>
-            <div class="tab-pane fade" id="v-pills-profile" role="tabpanel" aria-labelledby="v-pills-profile-tab">
-                <form class="">
+
+            <!-- RFID TAB -->
+            <div class="tab-pane fade" id="v-pills-rfid" role="tabpanel" aria-labelledby="v-pills-rfid-tab">
                     <div id="tagFailed" class="alert alert-danger alert-dismissible text-left fade" role="alert">
-                        Nepodařilo se přidat RIFD kartu
-                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span>Nepodařilo se přidat RIFD kartu</span>
+                        <button type="button" class="close" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
                     <div id="tagSuccess" class="alert alert-success alert-dismissible text-left fade " role="alert">
-                        Podařilo se úspěšně přidat RIFD kartu
-                        <div id="addTag" type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span>Podařilo se úspěšně přidat RIFD kartu</span>
+                        <button type="button" class="close" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
-                        </div>
+                        </button>
                     </div>
                     <div class="form-group">
                         <label for="rifdCode">RIFD kód</label>
-                        <input type="text" class="form-control" id="rifdCode" placeholder="">
+                        <input type="text" class="form-control" id="rifdCode" placeholder="" required>
                     </div>
                     <div class="form-group">
                         <label for="tagUser">Jméno uživatele</label>
-                        <input type="text" class="form-control" id="tagUser" placeholder="">
+                        <input type="text" class="form-control" id="tagUser" placeholder="" required>
                     </div>
-                    <div id="tagAddBtn" type="submit" class="btn btn-primary">Přidat do databáze</div>
-                </form>
+                    <button id="tagAddBtn" class="btn btn-primary">Přidat do databáze</button>
+
                 <table class="table mt-5" id="tagTable">
                     <thead class="thead-dark">
                     <tr>
@@ -111,7 +117,9 @@
                     </tbody>
                 </table>
             </div>
-            <div class="tab-pane fade" id="v-pills-messages" role="tabpanel" aria-labelledby="v-pills-messages-tab">
+
+            <!-- LOG TAB -->
+            <div class="tab-pane fade" id="v-pills-log" role="tabpanel" aria-labelledby="v-pills-log-tab">
                 <table class="table mt-5" id="historyTable">
                     <thead class="thead-dark">
                     <tr>
@@ -151,230 +159,9 @@
         </div>
     </div>
 </div>
-
+<script src="assets/js/main.js"></script>
 <script type="text/javascript" src="assets/js/jquery.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"></script>
-<script>
-    var auth;
-    $(document).ready(function () {
-        auth = getCookie("Authorization");
-        console.log(auth);
-        if (auth == null) {
-            window.location.replace("index.html");
-        }
-
-        fetchClient();
-        fetchRfid();
-        fetchHistory();
-
-        $("#tagAddBtn").click(function () {
-            var newTag = {tagId: $("#rifdCode").val(), owner: $("#tagUser").val()}
-            console.log(newTag);
-            $.ajax({
-                url: 'http://localhost:8080/api/v1/tags',
-                type: 'post',
-                dataType: 'json',
-                contentType: "application/json",
-                data: JSON.stringify(newTag),
-                beforeSend: function (xhr) {
-                    xhr.setRequestHeader("Authorization", auth);
-                },
-            }).done(function (response, status, xhr) {
-                $("#tagSuccess").addClass("show");
-                $("#tagSuccess").show();
-                fetchRfid();
-            }).fail(function (response) {
-                if (response.status === 403) {
-                    document.cookie = "";
-                    window.location.replace("index.html");
-                }
-                $("#tagFailed").addClass("show");
-                $("#tagFailed").show();
-            });
-        });
-
-        $("#tagTable").on('click', '.tagRemove', function() {
-            console.log("hello");
-            $.ajax({
-                url: 'http://localhost:8080/api/v1/tags/' + $(this).attr("data-rfid"),
-                type: 'delete',
-                beforeSend: function (xhr) {
-                    xhr.setRequestHeader("Authorization", auth);
-                },
-            }).done(function (response, status, xhr) {
-                console.log("hello3");
-                $("#tagSuccess").addClass("show");
-                $("#tagSuccess").show();
-                fetchRfid();
-            }).fail(function (response) {
-                console.log("hello2");
-                if (response.status === 403) {
-                    document.cookie = "";
-                    window.location.replace("index.html");
-                }
-                $("#tagFailed").addClass("show");
-                $("#tagFailed").show();
-            });
-        });
-
-        $("#clientConnectBtn").click(function () {
-            $.ajax({
-                url: 'http://localhost:8080/api/v1/registration/register/'
-                    + $("#ipAdress").val(),
-                type: 'get',
-                dataType: 'json',
-                beforeSend: function (xhr) {
-                    xhr.setRequestHeader("Authorization", auth);
-                },
-            }).done(function (response, status, xhr) {
-                var newClient = {name: $("#deviceName").val(), clientIp: $("#ipAdress").val()}
-                $.ajax({
-                    url: 'http://localhost:8080/api/v1/clients',
-                    type: 'post',
-                    dataType: 'json',
-                    contentType: "application/json",
-                    data: JSON.stringify(newClient),
-                    beforeSend: function (xhr) {
-                        xhr.setRequestHeader("Authorization", auth);
-                    },
-                }).done(function (response, status, xhr) {
-                    $("#clientConnectSucess").addClass("show");
-                    $("#clientConnectSucess").show();
-                    fetchClient();
-                }).fail(function (response) {
-                    if (response.status === 403) {
-                        document.cookie = "";
-                        window.location.replace("index.html");
-                    }
-                    $("#clientConnectFailed").addClass("show");
-                    $("#clientConnectFailed").show();
-                });
-            }).fail(function (response) {
-                if (response.status === 403) {
-                    document.cookie = "";
-                    window.location.replace("index.html");
-                }
-                $("#clientConnectFailed").addClass("show");
-                $("#clientConnectFailed").show();
-            });
-        });
-
-        function fetchHistory() {
-            $.ajax({
-                url: 'http://localhost:8080/api/v1/history',
-                type: 'get',
-                dataType: 'json',
-                beforeSend: function (xhr) {
-                    xhr.setRequestHeader("Authorization", auth);
-                },
-            }).done(function (response, status, xhr) {
-                console.log(response);
-                var i = 1;
-                $("#historyTable tbody tr").remove();
-                response.forEach(function (item) {
-                    var tr = "<tr>"
-                        + "<td>" + i++ + "</td>"
-                        + "<td>" + item.request + "</td>"
-                        + "<td>" + item.response + "</td>"
-                        + "<td>" + item.from + "</td>"
-                        + "<td>" + item.to + "</td>"
-                        + "<td>" + item.timestamp + "</td>"
-                        + "</tr>";
-                    $("#historyTable tbody").append(tr);
-                })
-            }).fail(function (response) {
-                if (response.status === 403) {
-                    document.cookie = "";
-                    window.location.replace("index.html");
-                }
-            });
-        }
-
-        function fetchRfid() {
-            $.ajax({
-                url: 'http://localhost:8080/api/v1/tags',
-                type: 'get',
-                dataType: 'json',
-                beforeSend: function (xhr) {
-                    xhr.setRequestHeader("Authorization", auth);
-                },
-            }).done(function (response, status, xhr) {
-                console.log(response);
-                var i = 1;
-                $("#tagTable tbody tr").remove();
-
-                response.forEach(function (item) {
-                    var tr = "<tr>"
-                        + "<td>" + i++ + "</td>"
-                        + "<td>" + item.tagId + "</td>"
-                        + "<td>" + item.owner + "</td>"
-                        + "<td>" + item.tagFirstSeen + "</td>"
-                        + "<td>" + item.tagLastSeen + "</td>"
-                        + "<td>" + item.tagSeenCount + "</td>"
-                        + "<td>" +
-                        "<div data-rfid=\"" + item.tagId + "\"" + "class=\"tagRemove\" type=\"button\" className=\"btn btn-danger\" " +
-                        ">" + " Odstranit</div> "
-                        + "</td>"
-                        + "</tr>";
-                    $("#tagTable tbody").append(tr);
-                })
-            }).fail(function (response) {
-                if (response.status === 403) {
-                    document.cookie = "";
-                    window.location.replace("index.html");
-                }
-            });
-        }
-
-        function fetchClient() {
-            $.ajax({
-                url: 'http://localhost:8080/api/v1/clients',
-                type: 'get',
-                dataType: 'json',
-                beforeSend: function (xhr) {
-                    xhr.setRequestHeader("Authorization", auth);
-                },
-            }).done(function (response, status, xhr) {
-                console.log(response);
-                var i = 1;
-                $("#tableClient tbody tr").remove();
-                response.forEach(function (item) {
-                    var tr = "<tr>"
-                        + "<td>" + i++ + "</td>"
-                        + "<td>" + item.clientIp + "</td>"
-                        + "<td>" + item.name + "</td>"
-                        + "<td>" + item.description + "</td>"
-                        + "<button type=\"button\" className=\"btn btn-danger\" " +
-                        "data-toggle=\"modal\" data-target=\"#exampleModal\">Odstranit</button> "
-                        + "</td>"
-                        + "</tr>";
-                    $("#tableClient tbody").append(tr);
-                })
-            }).fail(function (response) {
-                if (response.status === 403) {
-                    document.cookie = "";
-                    window.location.replace("index.html");
-                }
-            });
-        }
-
-        function getCookie(name) {
-            var cookie = document.cookie;
-            var prefix = name + "=";
-            var begin = cookie.indexOf("; " + prefix);
-            if (begin === -1) {
-                begin = cookie.indexOf(prefix);
-                if (begin !== 0) return null;
-            } else {
-                begin += 2;
-                var end = document.cookie.indexOf(";", begin);
-                if (end === -1) {
-                    end = cookie.length;
-                }
-            }
-            return unescape(cookie.substring(begin + prefix.length, end));
-        }
-    });
-</script>
+<script src="assets/js/administration.js"></script>
 </body>
 </html>
