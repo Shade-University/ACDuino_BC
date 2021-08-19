@@ -3,21 +3,21 @@
 #include "libraries/ACDuinoHardwareController.h"
 
 
-char* ssid = "Vondra";
-char* password = "lopata97";
+char* ssid = "<ssid>>";
+char* password = "<password>"; //Wifi config
 AcDuinoWifiServer* server;
 AcDuinoHardwareController* hwController;
 void setup() {
     Serial.begin(9600);
     AcDuinoWifi wifi(ssid, password);
-    wifi.connect();
+    wifi.connect(); //Will block until connected
     hwController = new AcDuinoHardwareController();
-    server = new AcDuinoWifiServer(8080, hwController);   
-    server->start();
+    server = new AcDuinoWifiServer(8080, hwController); //Inicializatio
+    server->start(); //Webserver start
 }
 
 void loop() {
-    server->listen();
-    hwController->handleRfid();
+    server->listen(); //Listen for any requests
+    hwController->handleRfid(); //handle rfid cards
     delay(1000);
 }

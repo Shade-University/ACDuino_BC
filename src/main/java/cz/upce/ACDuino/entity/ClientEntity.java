@@ -29,6 +29,13 @@ public class ClientEntity {
 
     }
 
+    public ClientEntity(String name, String description, String clientIp, boolean active) {
+        this.name = name;
+        this.description = description;
+        this.clientIp = clientIp;
+        this.active = active;
+    }
+
     public long getId() {
         return id;
     }

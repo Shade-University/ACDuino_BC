@@ -5,6 +5,7 @@ void AcDuinoHardwareController::setLedRegistered()
     registered = true;
     digitalWrite(LED_BLUE, HIGH);
     Serial.println("changed registered status to true");
+    //After registration request, this method will be called
 }
 
 void AcDuinoHardwareController::setLedUnregistered()
@@ -12,11 +13,13 @@ void AcDuinoHardwareController::setLedUnregistered()
     registered = false;
     digitalWrite(LED_BLUE, LOW);
     Serial.println("changed registered status to false");
+    //After revoke, this method will be called
 }
 
 void AcDuinoHardwareController::setWifiClient(String host, int port)
 {
     this->client = new AcDuinoWifiClient(host, port);
+    //After successfull registration request, Wificlient will be set to send tags to server
 }
 
 void AcDuinoHardwareController::blinkOpenSuccess()
@@ -28,6 +31,7 @@ void AcDuinoHardwareController::blinkOpenSuccess()
     digitalWrite(LED_GREEN, LOW);
 
     digitalWrite(LED_BLUE, HIGH);
+    //SIMULATE OPEN SUCCESSS
 }
 
 void AcDuinoHardwareController::blinkOpenDenied()
@@ -39,6 +43,7 @@ void AcDuinoHardwareController::blinkOpenDenied()
     digitalWrite(LED_RED, LOW);
 
     digitalWrite(LED_BLUE, HIGH);
+    //SIMULATE OPEN DENIED
 }
 
 void AcDuinoHardwareController::handleRfid()
@@ -106,7 +111,7 @@ void AcDuinoHardwareController::handleRfid()
         lastRfidTime = millis();
         latestRfidTag = rfidTag;
 
-        if (client->authorizeRfid(rfidTag))
+        if (client->authorizeRfid(rfidTag)) //Send request to server
             blinkOpenSuccess();
         else
             blinkOpenDenied();

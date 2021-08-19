@@ -28,6 +28,7 @@ bool AcDuinoWifiClient::authorizeRfid(int rfidTag)
     client.println(postData.length());
     client.println();
     client.print(postData);
+    ///Craft HTTP request and send to server
 
     unsigned long timeout = millis();
     while (client.available() == 0)
@@ -83,4 +84,4 @@ String AcDuinoWifiClient::readJson(WiFiClient *client)
     json += c;
     Serial.println(json);
     return json;
-}
+} //Helper method to read json

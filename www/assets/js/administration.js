@@ -64,18 +64,23 @@ $(document).ready(function () {
     });
 
     $("#clientConnectBtn").click(function () {
+        var newClient = {name: $("#deviceName").val(), clientIp: $("#ipAdress").val()}
+
+        if (!newClient.name && !newClient.clientIp) {
+            showError("#clientConnectFailed", "Jméno i IP adresa musí být vyplněna");
+            return;
+        }
+
         $.ajax({
-            url: 'http://localhost:8080/api/v1/registration/register/'
-                + $("#ipAdress").val(),
+            url: SERVER + '/api/v1/registration/register/' + $("#ipAdress").val(),
             type: 'get',
             dataType: 'json',
             beforeSend: function (xhr) {
                 xhr.setRequestHeader("Authorization", auth);
             },
         }).done(function (response, status, xhr) {
-            var newClient = {name: $("#deviceName").val(), clientIp: $("#ipAdress").val()}
             $.ajax({
-                url: 'http://localhost:8080/api/v1/clients',
+                url: SERVER + '/api/v1/clients',
                 type: 'post',
                 dataType: 'json',
                 contentType: "application/json",
@@ -84,16 +89,14 @@ $(document).ready(function () {
                     xhr.setRequestHeader("Authorization", auth);
                 },
             }).done(function (response, status, xhr) {
-                $("#clientConnectSucess").addClass("show");
-                $("#clientConnectSucess").show();
+                showError("#clientConnectSucess", "Podařilo se úspěšně připojit k zařízení");
                 fetchClient();
             }).fail(function (response) {
                 if (response.status === 403) {
                     document.cookie = "";
                     window.location.replace("index.html");
                 }
-                $("#clientConnectFailed").addClass("show");
-                $("#clientConnectFailed").show();
+                showError("#clientConnectFailed", "Nepodařilo se připojit k zařízení");
             });
         }).fail(function (response) {
             if (response.status === 403) {
@@ -104,6 +107,43 @@ $(document).ready(function () {
             $("#clientConnectFailed").show();
         });
     });
+
+    $("#tableClient").on('click', '.clientRemove', function () {
+        var ip = $(this).attr("data-clientIp");
+        $.ajax({
+            url: SERVER + '/api/v1/registration/revoke/' + ip,
+            type: 'get',
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader("Authorization", auth);
+            },
+        }).done(function (response, status, xhr) {
+            $.ajax({
+                url: SERVER + '/api/v1/clients/' + ip,
+                type: 'delete',
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader("Authorization", auth);
+                },
+            }).done(function (response, status, xhr) {
+                showError("#clientConnectSucess", "Klient úspěšně odebrán.");
+                fetchClient();
+            }).fail(function (response) {
+                if (response.status === 403) {
+                    document.cookie = "";
+                    window.location.replace("index.html");
+                }
+                showError("#clientConnectFailed", "Klienta se nepodařilo odebrat.");
+            });
+        }).fail(function (response) {
+            if (response.status === 403) {
+                document.cookie = "";
+                window.location.replace("index.html");
+            }
+            showError("#clientConnectFailed", "Klienta se nepodařilo odebrat.");
+        });
+
+
+    });
+
 
     function fetchHistory() {
         $.ajax({
@@ -156,7 +196,7 @@ $(document).ready(function () {
                     + "<td>" + i++ + "</td>"
                     + "<td>" + item.tagId + "</td>"
                     + "<td>" + item.owner + "</td>"
-                    + "<td>" + firstSeen+ "</td>"
+                    + "<td>" + firstSeen + "</td>"
                     + "<td>" + lastSeen + "</td>"
                     + "<td>" + item.tagSeenCount + "</td>"
                     + "<td>" +
@@ -187,12 +227,13 @@ $(document).ready(function () {
             var i = 1;
             $("#tableClient tbody tr").remove();
             response.forEach(function (item) {
+                var description = item.description ? item.description : "";
                 var tr = "<tr>"
                     + "<td>" + i++ + "</td>"
                     + "<td>" + item.clientIp + "</td>"
                     + "<td>" + item.name + "</td>"
-                    + "<td>" + item.description + "</td>"
-                    + "<div data-client=\"" + item.id + "\"" + "class=\"clientRemove\" type=\"button\" className=\"btn btn-danger\" " +
+                    + "<td>" + description + "</td>"
+                    + "<td><div data-clientIp=\"" + item.clientIp + "\" type=\"button\" class=\"btn btn-danger clientRemove\" " +
                     ">" + " Odstranit</div> "
                     + "</td>"
                     + "</tr>";

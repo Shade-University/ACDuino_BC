@@ -20,8 +20,8 @@ void AcDuinoWifiServer::listen()
         {
             if (client.available())
             {
-                char c = client.read();
-                if (c == '{')
+                char c = client.read(); 
+                if (c == '{') //Read headers until body (which should be json)
                 {
                     String json = readJson(&client);
 
